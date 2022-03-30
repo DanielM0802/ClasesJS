@@ -33,7 +33,7 @@ do{
     
  
 
-}while(resultadoIsNan === true  );
+}while( resultadoIsNan === true  );
 
 
 
