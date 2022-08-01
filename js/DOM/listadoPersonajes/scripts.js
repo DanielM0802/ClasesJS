@@ -37,7 +37,6 @@ function iniciarApp() {
         <p class="text-center">${ this.peso }</p>
         <p class="text-center">${ this.colorOjos }</p>
         <p class="text-center">${ this.genero }</p>
-        
         `
         //Agregar cadena al contenedor con innerHtml
         contenedor.innerHTML = contenidoCard;
