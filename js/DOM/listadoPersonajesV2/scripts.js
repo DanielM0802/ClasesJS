@@ -38,52 +38,37 @@ function iniciarApp() {
 
 
   const personaje1 = new  Personaje("Luke Skywalker",172 ,77,"blue", "male");
-
   const personaje2 = new Personaje('Darth Vader', 202,136, "yellow", "male")
-
   const personaje3 = new Personaje('Leia Organa', 150, 49, 'brown', 'female')
-
   const personaje4 = new Personaje('Anakin Skywalker', 188, 84, 'blue', 'male')
 
    
-
- 
     const personajes = [personaje1, personaje2, personaje3, personaje4 ];
-
-
 
     const contenedorPersonajes = document.querySelector('.contenedor-personajes');
 
-
     //Creando nuestro propio nodo
-    const parrafoPrueba = document.createElement('P');
-    parrafoPrueba.textContent = 'un poco de texto';
-
+    const contenedorAlertas = document.createElement('DIV');
+    contenedorPersonajes.before(contenedorAlertas)
 
 
     const boton = document.querySelector('.btn-generar');
     boton.addEventListener('click', () => generarPersonajes());
 
-
-
-
-
-    function generarPersonajes(){
+    function generarPersonajes( personajesFiltrados=personajes ){
         
-        //const existePersonaje = document.querySelector('.card-body');
- 
+        contenedorPersonajes.innerHTML = "";
+        
         if (contenedorPersonajes.childElementCount === 0 ){
-             personajes.forEach( personaje => contenedorPersonajes.appendChild( personaje.generarHtml())
+            limpiarAlerta();
+            personajesFiltrados.forEach( personaje => contenedorPersonajes.appendChild( personaje.generarHtml())
             );
         }
-        
         
     }
 
     const formulario = document.querySelector('#formulario');
     formulario.addEventListener('submit', event => procesarFormulario(event) )
-
-
     
     function procesarFormulario(event) {
         event.preventDefault();
@@ -99,7 +84,6 @@ function iniciarApp() {
 
 
         //filtrar personajes
-        console.log('filtrando personajes...')
         
         filtrarPersonajes(busqueda,opcion);
        
@@ -115,44 +99,60 @@ function iniciarApp() {
 
         busqueda = busqueda.trim();
         //consultar que propiedad escogio el usuario
-        console.log(opcion)
         //si la opcion es altura o peso, la busqueda debe ser un numero
-       
-        
+        let personajesFiltrados = [];
+
 
         if( opcion === 'altura' || opcion === 'peso' ){
-            console.log('opcion numerica seleccionada')
             if( isNaN(busqueda) ){
-                console.log('campo no valido');
+                generarAlerta('Campo no valido')
                 return;
             }
-
         
-            console.log(busqueda)
-            const personajesFiltrados = personajes.filter( personaje => personaje[opcion] == busqueda );
-
-            console.log(personajesFiltrados);
+            personajesFiltrados = personajes.filter( personaje => personaje[opcion] == busqueda );
 
         }else{
 
-            const personajesFiltrados = personajes.filter( personaje => {
-            
+            personajesFiltrados = personajes.filter( personaje => {
                 const cadena = personaje[opcion].toUpperCase();
                 const subcadena = busqueda.toUpperCase(); 
-                
                 return cadena.includes(subcadena);
             });
-            
-            console.log(personajesFiltrados);
-            
+
         }
 
+        generarPersonajes(personajesFiltrados);
 
-
-
-
+        if(personajesFiltrados.length === 0){
+            generarAlerta('No se encontraron personajes')
+        }
 
     }
+
+    function generarAlerta(mensaje){
+
+        const mensajeAlerta = document.createElement('P');
+        mensajeAlerta.classList.add('bg-danger', 'p-2', 'alerta')
+        mensajeAlerta.textContent =  mensaje;
+
+
+        console.log(contenedorAlertas.childElementCount === 0)
+
+        if (contenedorAlertas.childElementCount === 0 ){
+            console.log('insertando alerta en html')
+            contenedorAlertas.appendChild(mensajeAlerta ) 
+        }
+
+    }
+
+    function limpiarAlerta(){
+        const mensajeAlerta = document.querySelector('.alerta');
+        if(mensajeAlerta){
+            mensajeAlerta.remove();
+        }
+    }
+
+
 
 
 }
